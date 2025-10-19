@@ -29,7 +29,7 @@ else
   {
     try
     {
-      var input = AnsiConsole.Ask<string>($"[bold green]rShell>[/] [dim]{StringHelpers.GetCurrentDirectory()}[/]> ");
+      var input = AnsiConsole.Ask<string>($"[bold green]{StringHelpers.GetAskPrompt()}[/] ");
 
       if (string.IsNullOrWhiteSpace(input))
         continue;
@@ -41,7 +41,7 @@ else
           trimmedInput.Equals("quit", StringComparison.OrdinalIgnoreCase) ||
           trimmedInput.Equals("q", StringComparison.OrdinalIgnoreCase))
       {
-        AnsiConsole.MarkupLine("[yellow]Goodbye![/]");
+        Logger.Write("Goodbye!", "yellow");
         break;
       }
 

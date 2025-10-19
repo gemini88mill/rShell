@@ -15,6 +15,16 @@ public static class Logger
   }
 
   /// <summary>
+  /// Writes a message to the console with specified color markup
+  /// </summary>
+  /// <param name="message">The message to write</param>
+  /// <param name="color">The color to apply (e.g., "yellow", "red", "blue", "green")</param>
+  public static void Write(string message, string color)
+  {
+    AnsiConsole.MarkupLine($"[{color}]{message}[/]");
+  }
+
+  /// <summary>
   /// Displays a warning message with yellow formatting
   /// </summary>
   /// <param name="message">The warning message to display</param>
