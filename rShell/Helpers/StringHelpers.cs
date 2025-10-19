@@ -20,21 +20,50 @@ public static class StringHelpers
   {
     try
     {
-      using var repo = new Repository(Environment.CurrentDirectory);
+      var gitRepoPath = FindGitRepository(Environment.CurrentDirectory);
+      if (string.IsNullOrEmpty(gitRepoPath))
+      {
+        return "";
+      }
+
+      using var repo = new Repository(gitRepoPath);
       return repo.Head.FriendlyName;
     }
     catch (RepositoryNotFoundException)
     {
       // Not a Git repository
-      Logger.Write("Not a Git repository", "yellow");
-      return null;
+      return "";
     }
     catch
     {
       // Handle other exceptions (permissions, corrupted repo, etc.)
-      Logger.Write("Error getting Git branch", "red");
-      return null;
+      return "";
     }
+  }
+
+  private static string FindGitRepository(string startPath)
+  {
+    var currentPath = startPath;
+
+    while (!string.IsNullOrEmpty(currentPath))
+    {
+      var gitPath = Path.Combine(currentPath, ".git");
+      if (Directory.Exists(gitPath) || File.Exists(gitPath))
+      {
+        return currentPath;
+      }
+
+      var parentPath = Directory.GetParent(currentPath)?.FullName;
+      if (parentPath == currentPath)
+      {
+        // Reached root directory
+        break;
+      }
+
+      currentPath = parentPath;
+    }
+
+    return "";
   }
 
   public static string GetAskPrompt()
@@ -43,7 +72,12 @@ public static class StringHelpers
     var currentDirectory = GetCurrentDirectory();
     var gitBranch = GetGitBranch();
 
-    var prompt = $"[bold red]{user}[/] [bold green]▶[/] [dim]{currentDirectory}[/] [bold yellow]({gitBranch})[/]";
+    var prompt = $"[bold red]{user}[/] [bold green]▶[/] [dim]{currentDirectory}[/] ";
+
+    if (!string.IsNullOrEmpty(gitBranch))
+    {
+      prompt += $"[bold yellow]({gitBranch})[/]";
+    }
 
     return prompt;
   }
