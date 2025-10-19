@@ -1,11 +1,15 @@
 ﻿using Spectre.Console;
 using Spectre.Console.Cli;
 using rShell.Commands;
+using rShell.Helpers;
 
 var app = new CommandApp();
 app.Configure(config =>
 {
-  config.AddCommand<EchoCommand>("echo");
+  config.AddCommand<EchoCommand>("echo")
+    .WithDescription("Echo the given text");
+  config.AddCommand<LsCommand>("ls")
+    .WithDescription("List the contents of the current directory");
 });
 
 // Check if we have command line arguments (direct mode)
@@ -19,13 +23,13 @@ else
   // Interactive mode: start REPL loop
   AnsiConsole.MarkupLine("[bold blue]rShell[/] - Interactive REPL");
   AnsiConsole.MarkupLine("Type [yellow]exit[/] or [yellow]quit[/] to exit, [yellow]help[/] for available commands.");
-  AnsiConsole.WriteLine();
+  Logger.Write("");
 
   while (true)
   {
     try
     {
-      var input = AnsiConsole.Ask<string>($"[bold green]rShell>[/] [dim]{Environment.CurrentDirectory}[/]> ");
+      var input = AnsiConsole.Ask<string>($"[bold green]rShell>[/] [dim]{StringHelpers.GetCurrentDirectory()}[/]> ");
 
       if (string.IsNullOrWhiteSpace(input))
         continue;
@@ -55,12 +59,12 @@ else
 
       if (result != 0)
       {
-        AnsiConsole.MarkupLine($"[red]Command failed with exit code {result}[/]");
+        Logger.Error($"Command failed with exit code {result}");
       }
     }
     catch (Exception ex)
     {
-      AnsiConsole.MarkupLine($"[red]Error:[/] {ex.Message}");
+      Logger.Exception(ex);
     }
   }
 }
