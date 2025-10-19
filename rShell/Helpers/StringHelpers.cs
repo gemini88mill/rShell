@@ -76,7 +76,7 @@ public static class StringHelpers
 
     if (!string.IsNullOrEmpty(gitBranch))
     {
-      prompt += $"[bold yellow]({gitBranch})[/]";
+      prompt += $"[bold yellow]git:([bold blue]{gitBranch}[/])[/]";
     }
 
     return prompt;

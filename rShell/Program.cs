@@ -25,11 +25,14 @@ else
   AnsiConsole.MarkupLine("Type [yellow]exit[/] or [yellow]quit[/] to exit, [yellow]help[/] for available commands.");
   Logger.Write("");
 
+  // Initialize command history
+  var commandHistory = new CommandHistory();
+
   while (true)
   {
     try
     {
-      var input = AnsiConsole.Ask<string>($"[bold green]{StringHelpers.GetAskPrompt()}[/] ");
+      var input = Input.ReadLine($"[bold green]{StringHelpers.GetAskPrompt()}[/] ", commandHistory);
 
       if (string.IsNullOrWhiteSpace(input))
         continue;

@@ -1,6 +1,5 @@
 using Spectre.Console;
 using Spectre.Console.Cli;
-using rShell.Helpers;
 
 namespace rShell.Commands;
 
@@ -22,7 +21,7 @@ public class EchoCommand : Command<EchoCommand.Settings>
   {
     if (string.IsNullOrEmpty(settings.Text))
     {
-      Logger.Error("No text provided to echo.");
+      AnsiConsole.MarkupLine("[red]Error:[/] No text provided to echo.");
       return 1;
     }
 
@@ -35,7 +34,7 @@ public class EchoCommand : Command<EchoCommand.Settings>
 
     for (int i = 0; i < settings.Repeat; i++)
     {
-      Logger.Write(text);
+      AnsiConsole.WriteLine(text);
     }
 
     return 0;
